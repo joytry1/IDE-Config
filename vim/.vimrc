@@ -42,11 +42,15 @@ set completeopt=menu
 set expandtab
 set backspace=2
 set encoding=utf-8
+set clipboard=unnamed
 " If installed using Homebrew
 set rtp+=/usr/local/opt/fzf
 
 autocmd VimEnter *.go NERDTree
 let g:NERDTreeWinSize=25
+let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\.DS_Store$', '\.git$', '\.swp$'] " ignore files in nerd tree
+
 
 syntax on
 
@@ -76,14 +80,20 @@ nnoremap <silent> <Leader>A :Ag<CR>
 
 highlight Visual cterm=reverse ctermbg=NONE
 
-let $LANG = 'en'  "set message language
+language en_US
 set langmenu=en   "set menu's language of gvim. no spaces beside '='
 
 " let g:ycm_server_python_interpreter='/usr/bin/python'
 " let g:ycm_global_ycm_extra_conf='~/.vim/.ycm_extra_conf.py'
 let g:ackprg='ag --nogroup --nocolor --column'
 let g:go_def_mode = 'gopls'
+let g:go_info_mode='gopls'
 let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+let g:go_metalinter_command='golangci-lint'
+let g:go_fmt_command = "goimports"
+" let g:go_metalinter_enabled = ['vet', 'errcheck --blank --lint', 'golint']
+" let g:go_metalinter_autosave_enabled = ['vet', 'errcheck', 'bodyclose']
+" let g:go_metalinter_autosave = 1
 
 " if hidden is not set, TextEdit might fail.
 set hidden
