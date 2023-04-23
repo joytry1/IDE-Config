@@ -1,89 +1,121 @@
 set rtp+=$GOPATH/src/github.com/golang/lint/misc/vim
 
-set rtp+=~/.vim/bundle/Vundle.vim
+call plug#begin('~/.vim/plugged')
 
-filetype off " 必填
+Plug 'Raimondi/delimitMate'
+" Plug 'scrooloose/nerdtree'
+Plug 'fatih/vim-go'
+Plug 'majutsushi/tagbar'
+Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+Plug 'hzchirs/vim-material'
+Plug 'bronson/vim-trailing-whitespace'
+Plug 'vim-airline/vim-airline', { 'tag': 'v0.11' }
+Plug 'kannokanno/previm'
+Plug 'tyru/open-browser.vim'
+Plug 'easymotion/vim-easymotion'
+" Plug 'jistr/vim-nerdtree-tabs'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+" Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'rking/ag.vim'
+Plug 'mileszs/ack.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'junegunn/gv.vim'
+Plug '/ack.vim'
+Plug 'vim-scripts/dbext.vim'
+Plug 'vim-scripts/Conque-Shell'
 
-call vundle#begin()
-
-Plugin 'mileszs/ack.vim' " vim内搜索插件
-Plugin 'Raimondi/delimitMate' " 符号自动补全，被动触发，如自动补全[],()等。
-Plugin 'scrooloose/nerdtree' " 目录管理插件，必装插件
-Plugin 'VundleVim/Vundle.vim' " vim插件管理器，必装
-Plugin 'fatih/vim-go' " Go工具管理，必装
-Plugin 'majutsushi/tagbar' " tagbar能在侧边栏展示Go源码中的类/方法/变量等, 可以选中快速跳转到目标位置
-Plugin 'bronson/vim-trailing-whitespace' " 高亮行末空格(标红), 也可以一键去除文件中所有行行尾空格
-" Plugin 'ycm-core/YouCompleteMe' " 代码自动补全插件，安装起来较麻烦
-Plugin 'neoclide/coc.nvim'
-Plugin 'vim-airline/vim-airline' " 状态栏美化插件
-Plugin 'kannokanno/previm' " markdown预览插件，十分好用
-Plugin 'tyru/open-browser.vim' " 在vim内打开浏览器，配合previm就可以一边编辑，一边在浏览器上预览
-Plugin 'jistr/vim-nerdtree-tabs' " nerdtree的增强插件
-"Plugin 'vim-scripts/SuperTab'
-
-call vundle#end()
+call plug#end()
 
 filetype plugin on
 
-let g:indent_guides_enable_on_vim_startup = 0
-
-set nocompatible " 这个设置表示不兼容老版本vi，使用vim的扩展功能，必写
-set ts=4 " 设置tab为4个空格
-set smarttab " 根据文件中其他地方的缩进空格个数来确定一个 tab 是多少个空格
-set smartindent " 智能对齐
+set modifiable
+set nocompatible
+set ts=4
+set smarttab
+set smartindent
 set shiftwidth=4
 set nu!
-set autowrite " 设置自动保存内容
-set ignorecase " 搜索忽略大小写
-set hlsearch " 开启搜索结果的高亮显示
-set incsearch " 边输入边搜索(实时搜索)
-set cursorline " 高亮光标所在的行
+set autowrite
+set ignorecase
+set hlsearch
+set incsearch
+" set cursorline
+set ma
 set completeopt=menu
 set expandtab
 set backspace=2
-set encoding=utf-8
-" If installed using Homebrew
+set ttimeoutlen=50
+set encoding=UTF-8
+set background=dark
+" set termguicolors
+set langmenu=en   "set menu's language of gvim. no spaces beside '='
+set splitright
 set rtp+=/usr/local/opt/fzf
 
-autocmd VimEnter *.go NERDTree
-let g:NERDTreeWinSize=25
+" let g:NERDTreeWinSize=30
+" Dark
+colorscheme jellybeans
+" colorscheme molokai
+let g:jellybeans_overrides = {
+\    'Todo': { 'guifg': '303030', 'guibg': 'f0f000',
+\              'ctermfg': 'Black', 'ctermbg': 'Yellow',
+\              'attr': 'bold' },
+\    'MatchParen': { 'guifg': 'dd0093', 'guibg': 'b4cdcd',
+\                    'ctermfg': 'Magenta', 'ctermbg': '' },
+\}
 
 syntax on
 
-colorscheme molokai
-
-" Normal模式下的快捷键
 map <F2> :GoDef<CR>
 map <F3> :GoReferrers<CR>
 map <F5> :GoRun<CR>
 map <F8> :TagbarToggle<CR>
-map <F10> :NERDTreeToggle<CR>
+map <F10> :CocCommand explorer<CR>
 map <S-s> :GoImports<CR>
+map <F7> :GoImplements<CR>
 map <S-f> :GoFmt<CR>
+nmap ss <Plug>(easymotion-s2)
+map s :vsplit<CR>
 
-" 从vim内复制到vim外
-" 具体操作是进入VISUAL模式，选中按下;y，再ctrl+v
-let mapleader=";"
 vnoremap <leader>y :w !pbcopy<CR><CR>
 vnoremap <leader>p :r !pbpaste<CR><CR>
 
-command! -bang -nargs=* Ag
-  \ call fzf#vim#ag(<q-args>,
-  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \                 <bang>0)
-nnoremap <silent> <Leader>A :Ag<CR>
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
+nnoremap <Leader>a :Ag<CR>
+nnoremap <Leader>p :Files<CR>
+nnoremap <Leader>b :Buffers<CR>
+nnoremap <C-e> :botright terminal<CR>
 
 highlight Visual cterm=reverse ctermbg=NONE
 
-let $LANG = 'en'  "set message language
-set langmenu=en   "set menu's language of gvim. no spaces beside '='
+language en_US
 
-" let g:ycm_server_python_interpreter='/usr/bin/python'
-" let g:ycm_global_ycm_extra_conf='~/.vim/.ycm_extra_conf.py'
-let g:ackprg='ag --nogroup --nocolor --column'
-let g:go_def_mode = 'gopls'
+let g:go_fmt_command="gopls"
+let g:go_gopls_gofumpt=1
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
+let g:go_fmt_command = "goimports"
 let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+let g:go_highlight_types = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_generate_tags = 1
+let g:airline#extensions#hunks#enabled=0
+let g:airline#extensions#branch#enabled=1
+let g:indent_guides_enable_on_vim_startup = 0
+let g:ackprg = 'ag --nogroup --nocolor --column'
+let mapleader=";"
+let g:EasyMotion_smartcase = 1
+let g:coc_explorer_global_presets = {
+\   'sidebar': {
+\      'position': 'left',
+\      'file-child-template': '[git | 2] [selection | clip | 1] [indent][icon | 1] [diagnosticError & 1][filename omitCenter 1][modified][readonly]'
+\   }
+\ }
+au Filetype FILETYPE let b:AutoPairs = {"(": ")"}au FileType go let b:AutoPairs = AutoPairsDefine({'<?' : '?>', '<?go': '?>'})
+
+
+autocmd VimEnter *.go CocCommand explorer --preset sidebar
 
 " if hidden is not set, TextEdit might fail.
 set hidden
@@ -106,11 +138,19 @@ set signcolumn=yes
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <silent><expr> <C-x><C-z> coc#pum#visible() ? coc#pum#stop() : "\<C-x>\<C-z>"
+" remap for complete to use tab and <cr>
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+        \ coc#pum#visible() ? coc#pum#next(1):
+        \ <SID>check_back_space() ? "\<Tab>" :
+        \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+inoremap <silent><expr> <c-space> coc#refresh()
+
+hi CocSearch ctermfg=12 guifg=#18A3FF
+hi CocMenuSel ctermbg=109 guibg=#13354A
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -122,7 +162,6 @@ inoremap <silent><expr> <c-space> coc#refresh()
 
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 " Or use `complete_info` if your vim support it, like:
 " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
